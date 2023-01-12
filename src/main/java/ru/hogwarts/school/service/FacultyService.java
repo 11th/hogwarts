@@ -17,7 +17,7 @@ public class FacultyService {
         return faculties.put(faculty.getId(), faculty);
     }
 
-    public Faculty read(Long id){
+    public Faculty read(long id){
         return faculties.get(id);
     }
 
@@ -26,14 +26,14 @@ public class FacultyService {
     }
 
     public Faculty update(Faculty faculty) {
-        if (faculties.get(faculty.getId()) == null){
+        if (!faculties.containsKey(faculty.getId())){
             return null;
         }
         faculties.put(faculty.getId(), faculty);
         return faculties.get(faculty.getId());
     }
 
-    public Faculty delete(Long id) {
+    public Faculty delete(long id) {
         return faculties.remove(id);
     }
 }

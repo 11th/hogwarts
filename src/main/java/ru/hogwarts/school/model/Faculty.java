@@ -7,13 +7,13 @@ public class Faculty {
     private String name;
     private String color;
 
-    public Faculty(Long id, String name, String color) {
+    public Faculty(long id, String name, String color) {
         setId(id);
         setName(name);
         setColor(color);
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 

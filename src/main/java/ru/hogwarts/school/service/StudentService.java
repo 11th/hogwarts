@@ -18,7 +18,7 @@ public class StudentService {
         return students.put(student.getId(), student);
     }
 
-    public Student read(Long id){
+    public Student read(long id){
         return students.get(id);
     }
 
@@ -27,14 +27,14 @@ public class StudentService {
     }
 
     public Student update(Student student) {
-        if (students.get(student.getId()) == null){
+        if (!students.containsKey(student.getId())){
             return null;
         }
         students.put(student.getId(), student);
         return students.get(student.getId());
     }
 
-    public Student delete(Long id) {
+    public Student delete(long id) {
         return students.remove(id);
     }
 }
