@@ -59,6 +59,6 @@ public class FacultyController {
         if (faculty == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(facultyService.delete(id));
+        return ResponseEntity.ok().build();
     }
 }

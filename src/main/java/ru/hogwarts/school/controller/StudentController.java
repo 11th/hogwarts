@@ -59,6 +59,6 @@ public class StudentController {
         if (student == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(studentService.delete(id));
+        return ResponseEntity.ok().build();
     }
 }
