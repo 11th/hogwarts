@@ -1,8 +1,7 @@
 package ru.hogwarts.school.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
@@ -14,13 +13,12 @@ public class Student {
     private String name;
     private int age;
 
-    public Student() {
-    }
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "faculty_id")
+    @JsonIgnoreProperties("students")
+    private Faculty faculty;
 
-    public Student(long id, String name, int age) {
-        setId(id);
-        setName(name);
-        setAge(age);
+    public Student() {
     }
 
     public void setId(long id) {
@@ -35,6 +33,10 @@ public class Student {
         this.age = age;
     }
 
+    public void setFaculty(Faculty faculty) {
+        this.faculty = faculty;
+    }
+
     public Long getId() {
         return id;
     }
@@ -45,6 +47,10 @@ public class Student {
 
     public int getAge() {
         return age;
+    }
+
+    public Faculty getFaculty() {
+        return faculty;
     }
 
     @Override

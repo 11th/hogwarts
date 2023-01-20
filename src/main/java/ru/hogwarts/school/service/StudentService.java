@@ -1,14 +1,10 @@
 package ru.hogwarts.school.service;
 
-import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class StudentService {
@@ -18,11 +14,7 @@ public class StudentService {
         this.studentRepository = studentRepository;
     }
 
-    public Student create(Student student) {
-        return studentRepository.save(student);
-    }
-
-    public Student read(long id) {
+    public Student findById(long id) {
         var studentOptional = studentRepository.findById(id);
         if (studentOptional.isEmpty()) {
             return null;
@@ -30,8 +22,16 @@ public class StudentService {
         return studentOptional.get();
     }
 
-    public Collection<Student> readAll() {
+    public Collection<Student> findAll() {
         return studentRepository.findAll();
+    }
+
+    public Collection<Student> findByAgeBetween(int from, int to) {
+        return studentRepository.findByAgeBetween(from, to);
+    }
+
+    public Student create(Student student) {
+        return studentRepository.save(student);
     }
 
     public Student update(Student student) {
