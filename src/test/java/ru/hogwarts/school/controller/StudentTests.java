@@ -125,4 +125,14 @@ class StudentTests {
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
+
+    @Test
+    public void uploadAvatar() {
+
+    }
+
+    @Test
+    public void loadAvatar() {
+
+    }
 }
