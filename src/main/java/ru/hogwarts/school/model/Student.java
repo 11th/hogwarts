@@ -18,9 +18,6 @@ public class Student {
     @JsonIgnoreProperties("students")
     private Faculty faculty;
 
-    public Student() {
-    }
-
     public void setId(long id) {
         this.id = id;
     }

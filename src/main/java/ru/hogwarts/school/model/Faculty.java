@@ -19,9 +19,6 @@ public class Faculty {
     @JsonIgnoreProperties("faculty")
     private Collection<Student> students = new HashSet<>();
 
-    public Faculty() {
-    }
-
     public void setId(long id) {
         this.id = id;
     }
