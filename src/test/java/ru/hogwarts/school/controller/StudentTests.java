@@ -7,11 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.*;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import ru.hogwarts.school.entity.Faculty;
 import ru.hogwarts.school.entity.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
@@ -85,6 +86,24 @@ class StudentTests {
     }
 
     @Test
+    public void getCount() throws Exception {
+        Integer response = testRestTemplate.getForObject(HOST + port + "/student/count", Integer.class);
+        Assertions.assertThat(response).isEqualTo(3);
+    }
+
+    @Test
+    public void getAvgAge() throws Exception {
+        Integer response = testRestTemplate.getForObject(HOST + port + "/student/average-age", Integer.class);
+        Assertions.assertThat(response).isEqualTo(22);
+    }
+
+    @Test
+    public void getLastAmountOfStudents() throws Exception {
+        var response = testRestTemplate.getForObject(HOST + port + "/student/last-1-students", List.class);
+        Assertions.assertThat(response.size()).isEqualTo(1);
+    }
+
+    @Test
     public void create() throws Exception {
         Student student = new Student();
         student.setName("post");
@@ -127,12 +146,26 @@ class StudentTests {
     }
 
     @Test
-    public void uploadAvatar() {
-
+    public void uploadAvatar() throws Exception {
+        Resource resource = new ClassPathResource("avatar/avatarForTests.webp");
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("avatar", resource);
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        ResponseEntity<String> response = testRestTemplate.exchange(
+                HOST + port + "/student/1/avatar",
+                HttpMethod.POST,
+                requestEntity,
+                String.class
+        );
+        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
-    public void loadAvatar() {
-
+    public void loadAvatar() throws Exception {
+        uploadAvatar();
+        String response = testRestTemplate.getForObject(HOST + port + "/student/1/avatar/preview", String.class);
+        Assertions.assertThat(response).isNotNull();
     }
 }

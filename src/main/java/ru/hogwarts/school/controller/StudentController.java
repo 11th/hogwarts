@@ -57,6 +57,21 @@ public class StudentController {
         return ResponseEntity.ok(studentService.findByAgeBetween(ageFrom, ageTo));
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<Integer> getCount() {
+        return ResponseEntity.ok(studentService.getCount());
+    }
+
+    @GetMapping("/average-age")
+    public ResponseEntity<Integer> getAvgAge() {
+        return ResponseEntity.ok(studentService.getAvgAge());
+    }
+
+    @GetMapping("/last-{amount}-students")
+    public ResponseEntity<Collection<Student>> getLastAmountOfStudents(@PathVariable Integer amount) {
+        return ResponseEntity.ok(studentService.getLastAmountOfStudents(amount));
+    }
+
     @PostMapping
     public ResponseEntity<Student> create(@RequestBody Student student) {
         return ResponseEntity.ok(studentService.create(student));
@@ -103,8 +118,8 @@ public class StudentController {
     }
 
     @PostMapping(value = "/{id}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadAvatar(@PathVariable Long id,
-                                               @RequestParam MultipartFile avatar) throws IOException {
+    public ResponseEntity<String> uploadAvatar(@PathVariable("id") Long id,
+                                               @RequestParam("avatar") MultipartFile avatar) throws IOException {
         studentService.uploadAvatar(id, avatar);
         return ResponseEntity.ok().build();
     }

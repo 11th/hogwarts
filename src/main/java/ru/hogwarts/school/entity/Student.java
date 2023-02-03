@@ -1,5 +1,6 @@
 package ru.hogwarts.school.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
@@ -16,6 +17,7 @@ public class Student {
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "faculty_id")
     @JsonIgnoreProperties("students")
+    @JsonIgnore
     private Faculty faculty;
 
     public void setId(long id) {

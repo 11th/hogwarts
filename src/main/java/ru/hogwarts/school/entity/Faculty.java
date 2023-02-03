@@ -1,5 +1,6 @@
 package ru.hogwarts.school.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
@@ -17,6 +18,7 @@ public class Faculty {
 
     @OneToMany(mappedBy = "faculty", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonIgnoreProperties("faculty")
+    @JsonIgnore
     private Collection<Student> students = new HashSet<>();
 
     public void setId(long id) {

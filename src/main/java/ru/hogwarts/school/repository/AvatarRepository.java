@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import ru.hogwarts.school.entity.Avatar;
 
 import java.util.Optional;
+
 @Repository
 public interface AvatarRepository extends JpaRepository<Avatar, Long> {
     Optional<Avatar> findByStudentId(Long studentId);
