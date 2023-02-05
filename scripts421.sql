@@ -7,8 +7,8 @@ create table student(
 
 create table faculty(
     id bigserial primary key,
-    name varchar(100),
-    color varchar(50)
+    name varchar(100) not null,
+    color varchar(50) not null
 );
 
 alter table faculty
