@@ -1,12 +1,12 @@
 create table student(
-    id bigserial primary key ,
+    id bigserial primary key,
     name varchar(100) not null,
     age integer check (age >= 16) default 20,
     faculty_id bigint references faculty (id)
 );
 
 create table faculty(
-    id bigserial primary key ,
+    id bigserial primary key,
     name varchar(100),
     color varchar(50)
 );
