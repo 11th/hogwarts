@@ -4,12 +4,10 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.objectweb.asm.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
@@ -65,15 +63,14 @@ class StudentTests {
 
     @AfterEach
     public void tearDown() {
-        //studentRepository.deleteAll();
-        //facultyRepository.deleteAll();
+        studentRepository.deleteAll();
+        facultyRepository.deleteAll();
     }
 
     @Test
     public void findAll() throws Exception {
         var response = testRestTemplate.getForObject(HOST + port + "/student", List.class);
         Assertions.assertThat(response.size()).isEqualTo(3);
-
         //ResponseEntity<Student[]> response = testRestTemplate.getForEntity(HOST + port + "/student", Student[].class);
         //Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         //Assertions.assertThat(response.getBody()).hasSize(3);
