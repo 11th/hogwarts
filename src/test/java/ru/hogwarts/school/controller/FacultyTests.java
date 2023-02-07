@@ -12,7 +12,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.hogwarts.school.entity.Faculty;
+import ru.hogwarts.school.entity.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
+import ru.hogwarts.school.repository.StudentRepository;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.List;
@@ -36,6 +38,9 @@ class FacultyTests {
 
     @MockBean
     private FacultyRepository facultyRepository;
+
+    @MockBean
+    private StudentRepository studentRepository;
 
     @SpyBean
     private FacultyService facultyService;
@@ -61,21 +66,18 @@ class FacultyTests {
                 .thenReturn(List.of(faculty));
         when(facultyRepository.save(any(Faculty.class)))
                 .thenReturn(faculty);
+
+        Student student = new Student();
+        student.setId(1);
+        student.setName(NAME);
+        student.setFaculty(faculty);
+
+        when(studentRepository.findByFacultyId(any(Long.class)))
+                .thenReturn(List.of(student));
     }
 
     @Test
-    public void getById() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/faculty/" + ID)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(ID))
-                .andExpect(jsonPath("$.name").value(NAME))
-                .andExpect(jsonPath("$.color").value(COLOR));
-    }
-
-    @Test
-    public void getAll() throws Exception {
+    public void findAll() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/faculty")
                         .accept(MediaType.APPLICATION_JSON))
@@ -86,7 +88,27 @@ class FacultyTests {
     }
 
     @Test
-    public void getByAge() throws Exception {
+    public void findById() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/faculty/" + ID)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(ID))
+                .andExpect(jsonPath("$.name").value(NAME))
+                .andExpect(jsonPath("$.color").value(COLOR));
+    }
+
+    @Test
+    public void findStudents() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/faculty/" + ID + "/students")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].faculty.id").value(ID));
+    }
+
+    @Test
+    public void findByParams() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/faculty/params?name=" + NAME + "&color=" + COLOR)
                         .accept(MediaType.APPLICATION_JSON))

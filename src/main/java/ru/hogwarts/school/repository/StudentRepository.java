@@ -11,6 +11,8 @@ import java.util.Collection;
 public interface StudentRepository extends JpaRepository<Student, Long> {
     Collection<Student> findByAgeBetween(int from, int to);
 
+    Collection<Student> findByFacultyId(long facultyId);
+
     @Query(value = "SELECT count(*) FROM student", nativeQuery = true)
     Integer getCount();
 

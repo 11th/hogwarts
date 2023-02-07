@@ -16,11 +16,6 @@ public class Faculty {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "faculty", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("faculty")
-    @JsonIgnore
-    private Collection<Student> students = new HashSet<>();
-
     public void setId(long id) {
         this.id = id;
     }
@@ -33,10 +28,6 @@ public class Faculty {
         this.color = color;
     }
 
-    public void setStudents(Collection<Student> students) {
-        this.students = students;
-    }
-
     public Long getId() {
         return id;
     }
@@ -47,10 +38,6 @@ public class Faculty {
 
     public String getColor() {
         return color;
-    }
-
-    public Collection<Student> getStudents() {
-        return students;
     }
 
     @Override
