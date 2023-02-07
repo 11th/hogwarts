@@ -1,7 +1,6 @@
 package ru.hogwarts.school.controller;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,7 @@ class StudentTests {
     private Student studentGet = new Student();
     private Student studentPut = new Student();
     private Student studentDel = new Student();
-    private final Faculty faculty = new Faculty();
+    private Faculty faculty = new Faculty();
 
     @LocalServerPort
     private int port;
@@ -38,14 +37,16 @@ class StudentTests {
     private StudentRepository studentRepository;
 
     @Autowired
-    private TestRestTemplate testRestTemplate;
-    @Autowired
     private FacultyRepository facultyRepository;
+
+    @Autowired
+    private TestRestTemplate testRestTemplate;
 
     @BeforeEach
     public void setUp() {
         faculty.setName("faculty");
         faculty.setColor("color");
+        faculty = facultyRepository.save(faculty);
 
         studentGet.setName("get");
         studentGet.setAge(22);
@@ -61,56 +62,63 @@ class StudentTests {
         studentDel = studentRepository.save(studentDel);
     }
 
-    @AfterEach
-    public void tearDown() {
-        studentRepository.deleteAll();
-        facultyRepository.deleteAll();
-    }
-
     @Test
     public void findAll() throws Exception {
-        var response = testRestTemplate.getForObject(HOST + port + "/student", List.class);
-        Assertions.assertThat(response.size()).isEqualTo(3);
-        //ResponseEntity<Student[]> response = testRestTemplate.getForEntity(HOST + port + "/student", Student[].class);
-        //Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        //Assertions.assertThat(response.getBody()).hasSize(3);
+        ResponseEntity<Student[]> response = testRestTemplate.getForEntity(
+                HOST + port + "/student",
+                Student[].class);
+        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Assertions.assertThat(response.getBody()).hasSize(3);
+        Assertions.assertThat(response.getBody()).containsExactlyInAnyOrderElementsOf(List.of(studentGet, studentPut, studentDel));
     }
 
     @Test
     public void findById() throws Exception {
-        Student student = testRestTemplate.getForObject(HOST + port + "/student/" + studentGet.getId(), Student.class);
-        Assertions.assertThat(student.getId()).isEqualTo(studentGet.getId());
+        Student response = testRestTemplate.getForObject(
+                HOST + port + "/student/" + studentGet.getId(),
+                Student.class);
+        Assertions.assertThat(response.getId()).isEqualTo(studentGet.getId());
     }
 
     @Test
     public void findFaculty() throws Exception {
-        Faculty facultyActual = testRestTemplate.getForObject(HOST + port + "/student/" + studentGet.getId() + "/faculty", Faculty.class);
-        Assertions.assertThat(facultyActual.getName()).isEqualTo(faculty.getName());
-        Assertions.assertThat(facultyActual.getColor()).isEqualTo(faculty.getColor());
+        Faculty response = testRestTemplate.getForObject(
+                HOST + port + "/student/" + studentGet.getId() + "/faculty",
+                Faculty.class);
+        Assertions.assertThat(response.getName()).isEqualTo(faculty.getName());
+        Assertions.assertThat(response.getColor()).isEqualTo(faculty.getColor());
     }
 
     @Test
     public void findByAgeBetween() throws Exception {
-        var response = testRestTemplate.getForObject(HOST + port + "/student/params?ageFrom=22&ageTo=22", List.class);
-        Assertions.assertThat(response.size()).isEqualTo(3);
+        ResponseEntity<Student[]> response = testRestTemplate.getForEntity(
+                HOST + port + "/student/params?ageFrom=22&ageTo=22",
+                Student[].class);
+        Assertions.assertThat(response.getBody()).hasSize(3);
     }
 
     @Test
     public void getCount() throws Exception {
-        Integer response = testRestTemplate.getForObject(HOST + port + "/student/count", Integer.class);
+        Integer response = testRestTemplate.getForObject(
+                HOST + port + "/student/count",
+                Integer.class);
         Assertions.assertThat(response).isEqualTo(3);
     }
 
     @Test
     public void getAvgAge() throws Exception {
-        Integer response = testRestTemplate.getForObject(HOST + port + "/student/average-age", Integer.class);
+        Integer response = testRestTemplate.getForObject(
+                HOST + port + "/student/average-age",
+                Integer.class);
         Assertions.assertThat(response).isEqualTo(22);
     }
 
     @Test
     public void getLastAmountOfStudents() throws Exception {
-        var response = testRestTemplate.getForObject(HOST + port + "/student/last-1-students", List.class);
-        Assertions.assertThat(response.size()).isEqualTo(1);
+        ResponseEntity<Student[]> response = testRestTemplate.getForEntity(
+                HOST + port + "/student/last-1-students",
+                Student[].class);
+        Assertions.assertThat(response.getBody()).hasSize(1);
     }
 
     @Test
@@ -123,7 +131,6 @@ class StudentTests {
                 HOST + port + "/student",
                 student,
                 Student.class);
-
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThat(response.getBody().getName()).isEqualTo("post");
         Assertions.assertThat(response.getBody().getAge()).isEqualTo(18);
@@ -138,7 +145,6 @@ class StudentTests {
                 HttpMethod.PUT,
                 new HttpEntity<>(studentPut),
                 Student.class);
-
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThat(response.getBody().getName()).isEqualTo(studentPut.getName());
         Assertions.assertThat(response.getBody().getAge()).isEqualTo(studentPut.getAge());
@@ -151,7 +157,6 @@ class StudentTests {
                 HttpMethod.DELETE,
                 HttpEntity.EMPTY,
                 Void.class);
-
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
@@ -163,6 +168,7 @@ class StudentTests {
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("avatar", resource);
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
         ResponseEntity<String> response = testRestTemplate.exchange(
                 HOST + port + "/student/1/avatar",
                 HttpMethod.POST,
