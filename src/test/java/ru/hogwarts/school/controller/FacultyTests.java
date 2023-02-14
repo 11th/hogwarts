@@ -119,6 +119,20 @@ class FacultyTests {
     }
 
     @Test
+    public void getLongestName() throws Exception {
+        Faculty faculty1 = new Faculty();
+        faculty1.setName("name");
+        Faculty faculty2 = new Faculty();
+        faculty2.setName("longest");
+        when(facultyRepository.findAll()).thenReturn(List.of(faculty1, faculty2));
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/faculty/longest-name")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value("longest"));
+    }
+
+    @Test
     public void create() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/faculty")

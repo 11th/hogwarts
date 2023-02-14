@@ -122,6 +122,15 @@ class StudentTests {
     }
 
     @Test
+    public void getNames() throws Exception {
+        ResponseEntity<String[]> response = testRestTemplate.getForEntity(
+                HOST + port + "/student/names?startsWith=g",
+                String[].class);
+        Assertions.assertThat(response.getBody()).hasSize(1);
+        Assertions.assertThat(response.getBody()).isEqualTo(List.of("GET").toArray());
+    }
+
+    @Test
     public void create() throws Exception {
         Student student = new Student();
         student.setName("post");

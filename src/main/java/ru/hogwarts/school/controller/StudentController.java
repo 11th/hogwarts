@@ -72,6 +72,11 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getLastAmountOfStudents(amount));
     }
 
+    @GetMapping("/names")
+    public ResponseEntity<Collection<String>> getNames(@RequestParam("startsWith") String startsWith) {
+        return ResponseEntity.ok(studentService.getNames(startsWith));
+    }
+
     @PostMapping
     public ResponseEntity<Student> create(@RequestBody Student student) {
         return ResponseEntity.ok(studentService.create(student));
