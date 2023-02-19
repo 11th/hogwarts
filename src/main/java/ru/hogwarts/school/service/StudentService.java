@@ -14,6 +14,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
@@ -128,5 +129,75 @@ public class StudentService {
 
     private String getFileExtensions(String fileName) {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
+    }
+
+    public void writeStudentsToConsole() {
+        List<Student> students = studentRepository.findAll();
+        if (students.size() >= 2) {
+            System.out.println(students.get(0));
+            System.out.println(students.get(1));
+        }
+
+        if (students.size() >= 4) {
+            new Thread(() -> {
+                try {
+                    Thread.sleep(5000);
+                    System.out.println(students.get(2));
+                    System.out.println(students.get(3));
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }).start();
+        }
+
+        if (students.size() >= 6) {
+            new Thread(() -> {
+                try {
+                    Thread.sleep(2000);
+                    System.out.println(students.get(4));
+                    System.out.println(students.get(5));
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }).start();
+        }
+    }
+
+    public void writeStudentsToConsoleSync() {
+        List<Student> students = studentRepository.findAll();
+        if (students.size() >= 2) {
+            printlnStudent(students.get(0));
+            printlnStudent(students.get(1));
+        }
+
+        if (students.size() >= 4) {
+            new Thread(() -> {
+                try {
+                    Thread.sleep(5000);
+                    printlnStudent(students.get(2));
+                    printlnStudent(students.get(3));
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }).start();
+        }
+
+        if (students.size() >= 6) {
+            new Thread(() -> {
+                try {
+                    Thread.sleep(5000);
+                    printlnStudent(students.get(4));
+                    printlnStudent(students.get(5));
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }).start();
+        }
+    }
+
+    private void printlnStudent(Student student) {
+        synchronized (StudentService.class) {
+            System.out.println(student);
+        }
     }
 }

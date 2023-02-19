@@ -128,4 +128,16 @@ public class StudentController {
         studentService.uploadAvatar(id, avatar);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("students-to-console")
+    public ResponseEntity<String> writeStudentsToConsole() {
+        studentService.writeStudentsToConsole();
+        return ResponseEntity.ok("done!");
+    }
+
+    @GetMapping("students-to-console-sync")
+    public ResponseEntity<String> writeStudentsToConsoleSync() {
+        studentService.writeStudentsToConsoleSync();
+        return ResponseEntity.ok("done!");
+    }
 }
